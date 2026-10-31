@@ -1,0 +1,19 @@
+#To not ignore
+
+!Cudo
+!Cudo/
+
+!./src
+!./src/*
+
+!.gitignore
+
+
+
+
+
+
+#To ignore
+
+.env
+muse_rag
