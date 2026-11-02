@@ -4,16 +4,16 @@ Guidance for AI coding agents working in this repository. Read this before makin
 
 ## Project purpose
 
-{PROJECT_NAME} RAG is a source-cited question-answering system over PDF documents. A question goes through retrieval, a relevance check, optional query rewriting, and a grounded answer that cites source and page. The system must answer only from retrieved evidence and abstain when evidence is missing.
+Ibo RAG is a general and source-cited question-answering system over PDF documents along with duckduckgosearch tool to search online when required. A question goes through intent analyzer, tool calling if required, retrieval, a relevance check, optional query rewriting, and a grounded answer that cites source and page. The system must answer only from retrieved evidence and abstain when evidence is missing. The online search is only performed when user explicitly ask "search online". 
 
 ## Repository layout
 
-- `src/{RAG_FILE}/settings.py`: typed configuration loaded once from environment and `configs/default.yaml`. Read config here; do not call `os.getenv` elsewhere.
-- `src/{RAG_FILE}/ingestion/`: loaders, chunkers, and the idempotent ingest pipeline.
-- `src/{RAG_FILE}/retrieval/`: `Retriever` protocol and implementations. Retrieval code depends on the protocol, not on a specific vector store.
-- `src/{RAG_FILE}/generation/`: LLM client, prompt loading, and answer formatting.
-- `src/{RAG_FILE}/agent/`: LangGraph state, nodes, and the compiled graph. Graph decisions live here; model-call details do not.
-- `src/{RAG_FILE}/api/`: FastAPI app and routes. Routes are thin and call the service layer.
+- `src/ibo_rag/settings.py`: typed configuration loaded once from environment and `configs/default.yaml`. Read config here; do not call `os.getenv` elsewhere.
+- `src/ibo_rag/ingestion/`: loaders, chunkers, and the idempotent ingest pipeline.
+- `src/ibo_rag/retrieval/`: `Retriever` protocol and implementations. Retrieval code depends on the protocol, not on a specific vector store.
+- `src/ibo_rag/generation/`: LLM client, prompt loading, and answer formatting.
+- `src/ibo_rag/agent/`: LangGraph state, nodes, and the compiled graph. Graph decisions live here; model-call details do not.
+- `src/ibo_rag/api/`: FastAPI app and routes. Routes are thin and call the service layer.
 - `service/rag_service.py`: the single entry point used by both the CLI and the API. Put new behavior here, not in the CLI or routes.
 - `configs/prompts/`: prompt templates. Change prompts here, not inline in Python.
 - `evals/`: golden dataset, metrics, and the evaluation runner.
