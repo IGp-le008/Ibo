@@ -1,19 +1,2 @@
-#To not ignore
-
-!Cudo
-!Cudo/
-
-!./src
-!./src/*
-
-!.gitignore
-
-
-
-
-
-
-#To ignore
-
+# Environment Variables
 .env
-muse_rag
