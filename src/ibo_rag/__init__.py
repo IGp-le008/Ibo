@@ -1,2 +1,0 @@
-"""Ibo RAG package."""
-

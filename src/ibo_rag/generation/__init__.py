@@ -1,2 +1,0 @@
-"""Answer generation and formatting."""
-
