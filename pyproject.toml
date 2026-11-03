@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ibo-rag"
+version = "0.1.0"
+description = "Source-cited PDF question answering with LangGraph."
+requires-python = ">=3.11"
+dependencies = [
+  "chromadb>=1.0.0",
+  "fastapi>=0.115.0",
+  "langchain>=1.0.0,<2.0.0",
+  "langchain-chroma>=1.0.0",
+  "langchain-community>=0.4.0,<0.5.0",
+  "langchain-core>=1.0.0,<2.0.0",
+  "langchain-openai>=1.0.0",
+  "langchain-tavily>=0.2.4",
+  "langchain-text-splitters>=1.0.0",
+  "langgraph>=1.0.0,<2.0.0",
+  "pydantic>=2.7.0",
+  "pydantic-settings>=2.0.0",
+  "pypdf>=5.0.0",
+  "python-dotenv>=1.0.0",
+  "pyyaml>=6.0.0",
+  "uvicorn[standard]>=0.30.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0", "ruff>=0.6.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
