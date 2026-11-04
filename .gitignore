@@ -1,5 +1,13 @@
 # Environment Variables
 .env
 .venv
+
+
+#Files and directories
+
 __pycache__/
+
 .pytest_cache/
+
+storage/chroma/*
+
