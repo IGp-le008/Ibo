@@ -1,8 +1,8 @@
 """Persistent Chroma store factory."""
 from langchain_chroma import Chroma
 
-from muse_rag.config import settings
-from muse_rag.embeddings import get_embeddings
+from rag.config import settings
+from rag.embeddings import get_embeddings
 
 
 def get_vector_store() -> Chroma:

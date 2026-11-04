@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 import sys
 
-from muse_rag.graph import ask
+from rag.graph import ask
 
 
 def main() -> None:

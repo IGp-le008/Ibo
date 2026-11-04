@@ -10,8 +10,8 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from muse_rag.config import settings
-from muse_rag.vectorstore import get_vector_store
+from rag.config import settings
+from rag.vectorstore import get_vector_store
 
 logger = logging.getLogger(__name__)
 
