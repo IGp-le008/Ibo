@@ -39,8 +39,12 @@ def run_face_worker(out_queue, stop_event):
                 result = tracker.detect(frame)
 
             if result is not None:
-                rx, ry = result["ratio"]
-                last_x, last_y = rx, ry
+                #potential guess of:
+                x, y = result["ratio"]
+                last_x, last_y = x, y
+
+                # rx, ry = result["ratio"]
+                # last_x, last_y = rx, ry
                 last_seen_ms = now_ms
                 present = True
             else:

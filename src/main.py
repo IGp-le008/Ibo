@@ -20,6 +20,7 @@ from control.face_worker import start_face_worker
 from control.voice_worker import start_voice_worker
 from control.chat_window import start_chat_window
 from control.servo import ArmController
+
 from expression.expression_config import Window
 from expression.idle_look import GazeSource, draw_idle_look
 from expression.bored import draw_bored
