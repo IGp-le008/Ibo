@@ -36,3 +36,4 @@ def draw_bored(surface, gaze, now_ms):
 
     mouth_center = (center[0], center[1] + int(face_diameter * Mouth.Y_OFFSET_RATIO))
     draw_mouth(surface, mouth_center, face_diameter)
+

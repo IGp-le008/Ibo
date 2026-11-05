@@ -1,3 +1,4 @@
+#Different states of the bot
 class State:
     IDLE_LOOK = "idle_look"
     BORED = "bored"
@@ -22,7 +23,7 @@ class Chat:
     SOURCE_COLOR = (140, 140, 160)
     ERROR_COLOR = (255, 120, 120)
     USER_LABEL = "You:"
-    ASSISTANT_LABEL = "Assistant(Collexa):"
+    ASSISTANT_LABEL = "Collexa:"
 
 
 class Servo:
@@ -74,7 +75,7 @@ class Audio:
     WAKE_COOLDOWN_MS = 1500              # ignore wake detections right after one fires
     TMP_WAV_PATH = "/tmp/collexa_utt.wav"
 
-
+#Timing preset of dirrent states
 class Timing:
     IDLE_BEFORE_RANDOM_MS = 2 * 60 * 1000
     RANDOM_LOOK_MS = 2 * 60 * 1000

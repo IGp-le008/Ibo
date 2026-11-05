@@ -17,6 +17,7 @@ Requires-Dist: numpy>=2.4.6
 Requires-Dist: openwakeword>=0.6.0
 Requires-Dist: pydantic>=2.7.0
 Requires-Dist: pydantic-settings>=2.0.0
+Requires-Dist: pygame>=2.6.1
 Requires-Dist: pypdf>=5.0.0
 Requires-Dist: python-dotenv>=1.0.0
 Requires-Dist: pyyaml>=6.0.0
