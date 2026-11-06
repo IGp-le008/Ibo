@@ -75,6 +75,9 @@ def write_wav(path, samples):
         wf.setframerate(Audio.SAMPLE_RATE)
         wf.writeframes(samples.astype(np.int16).tobytes())
 
+    #------WRITE WAV HAS NO RETURN. INTENDED OR MISSED?--------
+
+
 
 def transcribe(samples):
     """Run whisper-cli on the utterance and return the text (may be empty)."""
@@ -91,6 +94,8 @@ def transcribe(samples):
     except (OSError, subprocess.TimeoutExpired) as e:
         print(f"[voice_worker] whisper-cli failed: {e}")
         return ""
+
+        #---------IF RETURN FORMAT NOT IN TEXT === ERROR---------
     return out.stdout.strip()
 
 
@@ -106,7 +111,12 @@ def record_utterance(stream):
     while total_ms < Audio.MAX_UTTERANCE_MS:
         data, _ = stream.read(chunk_len)
         chunk = data[:, 0].astype(np.int16)
+
+        #------------DECISION? - MOVE FRAMES INTO IF STATEMENT?-------------
+        #------------RESOLVED -> CODE OK------------------
         frames.append(chunk)
+        
+        
         total_ms += Audio.CHUNK_MS
         rms = float(np.sqrt(np.mean(chunk.astype(np.float32) ** 2)))
         if rms < Audio.SILENCE_RMS:
@@ -122,6 +132,9 @@ def run_voice_worker(out_queue, stop_event):
     """Process entry point."""
     model = load_wake_model()
     chunk_len = int(Audio.SAMPLE_RATE * Audio.CHUNK_MS / 1000)
+   
+    #-----------1e9 = 10^9------------
+
     last_wake_ms = -1e9
 
     with sd.InputStream(samplerate=Audio.SAMPLE_RATE, channels=1,
@@ -136,6 +149,10 @@ def run_voice_worker(out_queue, stop_event):
 
             scores = model.predict(pcm)
             name, score = wake_score(scores)
+
+            #-----------WHY now_ms - last_wake_ms < cooldown used?  i.e 793982513.2057002 < 1500------------------
+            #-----------RESOLVED --> FOR SMALL DELAY TIME AFTER INITIATION-----------------------
+
             if score < Audio.WAKE_THRESHOLD or now_ms - last_wake_ms < Audio.WAKE_COOLDOWN_MS:
                 continue
 
@@ -147,6 +164,11 @@ def run_voice_worker(out_queue, stop_event):
             text = transcribe(utt)
             if not text:
                 continue
+
+            #--------------IN CASE OF GRATEFUL OUT_QUERE <- text & grateful ---------- KEEP IN IF?? -------------
+
+            #-------------- RESOLVED - CODE OK ----------------------------
+
             out_queue.put({"type": "speech", "text": text, "t": time.time() * 1000.0})
 
             grateful = find_phrase(text, GRATEFUL_PHRASES)
