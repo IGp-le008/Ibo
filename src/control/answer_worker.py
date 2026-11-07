@@ -36,6 +36,9 @@ class AnswerWorker:
                     text,
                     on_token=lambda piece: self._emit({"type": "token", "text": piece}),
                 )
+
+                #------- Currently result = {answer, cources, search_query, rewrite_count}. So when self._emit(type,result) why only return sources and not answer to chat_queue??------------------
+
                 self._emit({"type": "sources", "items": result["sources"]})
             except Exception as exc:
                 self._emit({"type": "error", "text": str(exc)})
