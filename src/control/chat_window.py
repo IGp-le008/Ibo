@@ -103,11 +103,17 @@ def run_chat_window(chat_queue, stop_event):
     running = True
     while running and not stop_event.is_set():
         for event in pygame.event.get():
+
+            #----------HOW DOES pygame.QUIT WORK? -------------
+
             if event.type == pygame.QUIT:
                 running = False
 
         while True:
             try:
+
+                # --------------HOW IS chat_queue ELEMENTS DECIDED?--------------
+
                 msg = chat_queue.get_nowait()
             except queue.Empty:
                 break
