@@ -7,6 +7,7 @@ from langchain_core.documents import Document
 
 class RAGState(TypedDict, total=False):
     question: str
+    route:str
     search_query: str
     documents: list[Document]
     relevant: bool
