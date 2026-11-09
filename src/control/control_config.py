@@ -1,3 +1,9 @@
+from pathlib import Path
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+WHISPER_MODEL_PATH = str(PROJECT_ROOT / "whisper.cpp/models/ggml-tiny.bin")
+
+
 #Different states of the bot
 class State:
     IDLE_LOOK = "idle_look"
@@ -55,7 +61,7 @@ class Camera:
 class Audio:
     SAMPLE_RATE = 16000
     CHUNK_MS = 80                           # openWakeWord frame size
-    WHISPER_MODEL_PATH = "models/ggml-tiny.bin"   # whisper.cpp tiny, quantized
+    WHISPER_MODEL_PATH = str(PROJECT_ROOT / "whisper.cpp/models/ggml-tiny.bin")   # whisper.cpp tiny, quantized
     WHISPER_LANGUAGES = ("en", "ne", "hi")
     WAKE_MODEL_PATH = None                  # hook: path to your custom openWakeWord model
     WAKE_THRESHOLD = 0.5
@@ -68,7 +74,7 @@ class Audio:
         "thank you", "thanks", "welcome", "great", "nice", "wow",
         "cute", "pretty",
     ]
-    WHISPER_CLI = "whisper-cli"          # whisper.cpp binary, must be on PATH or give full path
+    WHISPER_CLI = str(PROJECT_ROOT / "whisper.cpp/build/bin/whisper-cli")              # whisper.cpp binary, must be on PATH or give full path
     SILENCE_RMS = 500                    # int16 RMS below this counts as silence
     SILENCE_END_MS = 800                 # silence this long ends the utterance
     MAX_UTTERANCE_MS = 10000             # hard cap on one utterance
