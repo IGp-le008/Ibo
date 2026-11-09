@@ -9,11 +9,11 @@ import math
 
 import pygame
 
-from expression_config import Colors, Mouth
+from expressions.expression_config import Colors, Mouth
 from expressions.drawing import (
     face_geometry, eye_metrics, draw_face_plate, draw_mouth,
 )
-from expression_config import Timing
+from expressions.expression_config import Timing
 
 GLOW_EYE_STEPS = 16
 Z_PARTICLES = 3

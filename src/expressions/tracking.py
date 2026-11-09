@@ -7,7 +7,7 @@ Dead zone: left of LEFT_THRESHOLD looks left, right of RIGHT_THRESHOLD looks rig
 between them looks centre. Arm target is "down".
 """
 
-from expression_config import Blink, Gaze, Mouth
+from expressions.expression_config import Blink, Gaze, Mouth
 from expressions.drawing import (
     face_geometry, eye_metrics, eye_positions, draw_face_plate,
     draw_glowing_eye, draw_mouth, blink_scale,

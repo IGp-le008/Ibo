@@ -20,7 +20,7 @@ import multiprocessing as mp
 import numpy as np
 import sounddevice as sd
 
-from controlConfig import Audio
+from control.control_config import Audio
 
 try:
     from openwakeword.model import Model as WakeModel

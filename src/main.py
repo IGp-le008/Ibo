@@ -21,12 +21,12 @@ from control.voice_worker import start_voice_worker
 from control.chat_window import start_chat_window
 from control.servo import ArmController
 
-from expression.expression_config import Window
-from expression.idle_look import GazeSource, draw_idle_look
-from expression.bored import draw_bored
-from expression.sleep import draw_sleep
-from expression.listening import draw_listening
-from expression.grateful import draw_grateful
+from expressions.expression_config import Window
+from expressions.idle_look import GazeSource, draw_idle_look
+from expressions.bored import draw_bored
+from expressions.sleep import draw_sleep
+from expressions.listening import draw_listening
+from expressions.grateful import draw_grateful
 
 
 class ArmThread:

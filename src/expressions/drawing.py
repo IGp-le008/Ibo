@@ -8,7 +8,7 @@ Every function draws onto a supplied surface and does not call flip().
 import math
 import pygame
 
-from expression_config import Window, Colors, Eye, Mouth
+from expressions.expression_config import Window, Colors, Eye, Mouth
 
 def eye_positions(center, spacing, y_offset, base_h, eye_h, gx, gy):
     """

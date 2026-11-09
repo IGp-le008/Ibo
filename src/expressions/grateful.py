@@ -10,7 +10,7 @@ import math
 
 import pygame
 
-from config import Colors, Eye, Timing, Mouth
+from expressions.expression_config import Colors, Eye, Timing, Mouth
 from expressions.drawing import (
     face_geometry, eye_metrics, draw_face_plate, draw_mouth,
 )

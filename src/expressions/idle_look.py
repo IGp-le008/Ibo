@@ -7,7 +7,7 @@ Holds gaze state only. Arm target is a value; servo.py applies it.
 
 import random
 
-from expression_config import Timing, Gaze, Blink, Mouth
+from expressions.expression_config import Timing, Gaze, Blink, Mouth
 from expressions.drawing import (
     face_geometry, eye_metrics, eye_positions, draw_face_plate,
     draw_glowing_eye, draw_mouth, ease_in_out, blink_scale,

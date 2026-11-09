@@ -10,7 +10,7 @@ Power: servos use an external 5 V supply, not the Pi's 5 V pin.
 import random
 import time
 
-from control_config import Servo
+from control.control_config import Servo
 
 try:
     import RPi.GPIO as GPIO

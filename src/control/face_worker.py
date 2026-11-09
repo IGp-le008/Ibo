@@ -12,8 +12,8 @@ import multiprocessing as mp
 
 import cv2
 
-from control_config import Camera
-from face_tracking import FaceTracker, prepare_display_frame
+from control.control_config import Camera
+from control.face_tracking import FaceTracker, prepare_display_frame
 
 
 def run_face_worker(out_queue, stop_event):

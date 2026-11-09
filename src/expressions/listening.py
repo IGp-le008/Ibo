@@ -7,7 +7,7 @@ If no target is known, the eyes stay centered.
 Arm target is "down" (PDF).
 """
 
-from expression_config import Blink, Gaze, Mouth
+from expressions.expression_config import Blink, Gaze, Mouth
 from expressions.drawing import (
     face_geometry, eye_metrics, eye_positions, draw_face_plate,
     draw_glowing_eye, draw_mouth, blink_scale,

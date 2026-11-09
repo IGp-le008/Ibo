@@ -5,7 +5,7 @@ Flat-top, U-bottom eyes. Random looking and blinking continue from 1a.
 Gaze source is passed in by the controller, so this file never imports idle_look.
 """
 
-from expression_config import Blink, Mouth
+from expressions.expression_config import Blink, Mouth
 from expressions.drawing import (
     face_geometry, eye_metrics, eye_positions, draw_face_plate,
     draw_glowing_eye, draw_mouth, blink_scale,
