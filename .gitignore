@@ -12,3 +12,6 @@ __pycache__/
 storage/chroma/*
 
 Experimental
+
+whisper.cpp
+whisper.cpp/*

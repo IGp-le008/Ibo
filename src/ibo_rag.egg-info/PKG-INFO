@@ -3,6 +3,7 @@ Name: ibo-rag
 Version: 0.1.0
 Summary: Source-cited PDF question answering with LangGraph.
 Requires-Python: >=3.11
+License-File: LICENSE
 Requires-Dist: chromadb>=1.0.0
 Requires-Dist: fastapi>=0.115.0
 Requires-Dist: langchain<2.0.0,>=1.0.0
@@ -14,6 +15,7 @@ Requires-Dist: langchain-tavily>=0.2.4
 Requires-Dist: langchain-text-splitters>=1.0.0
 Requires-Dist: langgraph<2.0.0,>=1.0.0
 Requires-Dist: numpy>=2.4.6
+Requires-Dist: opencv-python>=5.0.0.93
 Requires-Dist: openwakeword>=0.6.0
 Requires-Dist: pydantic>=2.7.0
 Requires-Dist: pydantic-settings>=2.0.0
@@ -26,3 +28,4 @@ Requires-Dist: uvicorn[standard]>=0.30.0
 Provides-Extra: dev
 Requires-Dist: pytest>=8.0.0; extra == "dev"
 Requires-Dist: ruff>=0.6.0; extra == "dev"
+Dynamic: license-file
