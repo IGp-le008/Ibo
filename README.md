@@ -1,101 +1,174 @@
-# Ibo RAG
+# CUDO / Collexa Robot Face
 
-Ibo is a prototype, source-cited PDF question-answering application built with LangGraph, LangChain, Chroma, FastAPI, and an OpenAI-compatible model provider.
+A Raspberry Pi 3B+ desk robot with an animated face, a voice interface, and a document question-answering assistant. The face shows idle, sleep, listening, tracking, and grateful expressions. Two 9g servos move the arms. The bot answers questions about a PDF using retrieval-augmented generation (RAG), and the answers stream into a separate chat window.
+
+Status: expressions, state machine, voice input, camera tracking, servo control, and RAG chat are implemented. Text-to-speech (Chatterbox) is deferred.
 
 ## Features
 
-- PDF ingestion with deterministic chunk IDs and persistent Chroma storage.
-- Document-grounded answers with source/page citations.
-- Explicit online-search route using Tavily.
-- Streaming answers through the CLI and HTTP API.
-- Abstention when no indexed passages are available.
+- **Idle behaviour (State 1):** random looking with blinks (1a), bored eyes (1b), then sleep with drifting Zs (1c). After three full cycles the bot stays asleep until a wake word.
+- **Listening (State 2):** eyes follow the speaker's face centre.
+- **Tracking (State 3):** eyes follow the largest face in view. A face present for 15 s in 1a moves the bot to Active.
+- **Voice input:** wake-word detection with openWakeWord, then transcription with whisper.cpp (tiny model).
+- **Grateful reaction:** short happy face when the speaker says a thank-you or compliment word.
+- **Arms:** two servos on hardware PWM. Look-down lifts them at random positions.
+- **Chat window:** separate 640×640 window with streamed answers and page citations.
+- **RAG:** LangGraph pipeline over a Chroma vector store, using an OpenAI-compatible API (OpenRouter by default).
 
-## Architecture
+## Project structure
 
-```mermaid
-flowchart LR
-  PDF[PDF files] --> Ingest[Load, split, embed]
-  Ingest --> Chroma[(Chroma)]
-  Q[Question] --> Graph[LangGraph router]
-  Graph --> Chroma
-  Graph --> Tavily[Tavily on explicit request]
-  Chroma --> LLM[Chat model]
-  Tavily --> LLM
-  LLM --> Stream[CLI/API stream]
+```
+Ibo/
+├── main.py                  # not in src; see "Running" (entry point is src/main.py)
+├── README.md
+├── requirements.txt
+├── .env                     # API keys (not committed)
+├── data/
+│   └── muse.pdf             # source document
+├── storage/
+│   └── chroma/              # vector index (created by ingest)
+├── whisper.cpp/             # local clone, gitignored
+└── src/
+    ├── main.py              # entry point: starts workers and the face loop
+    ├── control/
+    │   ├── control_config.py   # state timers, camera, audio, chat settings
+    │   ├── controller.py       # state machine (no drawing, no hardware)
+    │   ├── face_worker.py      # camera process: largest face position
+    │   ├── voice_worker.py     # mic process: wake word, record, whisper-cli
+    │   ├── answer_worker.py    # thread: runs RAG, streams tokens
+    │   ├── chat_window.py      # process: 640×640 chat window
+    │   └── servo.py            # arm PWM (stub on laptop)
+    ├── expression/
+    │   ├── expression_config.py  # sizes, ratios, colours, blink
+    │   ├── drawing.py            # shared eye, glow, mouth primitives
+    │   ├── idle_look.py          # 1a
+    │   ├── bored.py              # 1b
+    │   ├── sleep.py              # 1c
+    │   ├── listening.py          # State 2
+    │   ├── tracking.py           # State 3 (horizontal only)
+    │   └── grateful.py           # grateful reaction
+    └── rag/
+        ├── config.py           # reads .env, resolves paths from project root
+        ├── cli.py              # terminal Q&A
+        ├── embeddings.py
+        ├── ingest.py           # PDF → chunks → Chroma
+        ├── graph.py            # retrieve → grade → rewrite/answer (streams)
+        ├── models.py
+        └── vectorstore.py
 ```
 
-## Setup
+Configuration lives in two places on purpose. `control/control_config.py` holds values the controller reads to decide transitions. `expression/expression_config.py` holds values only the drawing code uses. Expressions never import each other, and the controller never draws.
 
-Requires Python 3.11+.
+## Requirements
+
+- Python 3.10 or newer
+- Linux (tested on Ubuntu; Raspberry Pi OS for the device)
+- A webcam at device index 0
+- A microphone
+- An OpenRouter (or compatible) API key
+- Raspberry Pi 3B+ with `RPi.GPIO` for servos (optional on a laptop)
+
+## Installation
 
 ```bash
+cd Ibo
 python -m venv .venv
 source .venv/bin/activate
-pip install -e ".[dev]"
-cp .env.example .env
+pip install -r requirements.txt
 ```
 
-Set `OPENAI_API_KEY` in `.env`. Set `TAVILY_API_KEY` only if online search is needed.
-For OpenRouter-compatible models, set `OPENAI_BASE_URL=https://openrouter.ai/api/v1`; models containing `/` use that URL automatically when no base URL is provided.
+System packages for audio (Debian/Ubuntu/Raspberry Pi OS):
+
+```bash
+sudo apt install libportaudio2
+```
+
+### whisper.cpp (speech-to-text)
+
+whisper.cpp is built from source and kept inside the project folder, which is gitignored.
+
+```bash
+cd Ibo
+git clone https://github.com/ggerganov/whisper.cpp
+cd whisper.cpp
+cmake -B build && cmake --build build -j --config Release
+sh ./models/download-ggml-model.sh tiny
+```
+
+Then set the absolute paths in `src/control/control_config.py`:
+
+```python
+WHISPER_CLI = "/full/path/to/Ibo/whisper.cpp/build/bin/whisper-cli"
+WHISPER_MODEL_PATH = "/full/path/to/Ibo/whisper.cpp/models/ggml-tiny.bin"
+```
+
+### Wake word model
+
+The app uses openWakeWord's pretrained placeholder model. To use your own wake words, train a model and set `Audio.WAKE_MODEL_PATH` in `control_config.py` to its `.onnx` or `.tflite` file.
 
 ## Configuration
 
-Defaults live in `configs/default.yaml`; environment variables override them.
+Create `Ibo/.env`:
 
-| Variable | Required | Purpose |
-|---|---:|---|
-| `OPENAI_API_KEY` | Yes | Embeddings and answer generation |
-| `TAVILY_API_KEY` | For web search | Explicit online search |
-| `IBO_CHAT_MODEL` | No | Chat model, default `gpt-4o-mini` |
-| `IBO_EMBEDDING_MODEL` | No | Embedding model, default `text-embedding-3-small` |
-| `IBO_DATA_DIR` | No | PDF directory, default `data` |
-| `IBO_INDEX_DIR` | No | Chroma directory, default `storage/chroma` |
-| `IBO_TOP_K` | No | Retrieved chunk count, default `4` |
-
-## Run
-
-Index PDFs:
-
-```bash
-python -m ibo_rag.cli ingest
+```
+CHAT_API_KEY=your_openrouter_key
+EMBEDDING_API_KEY=your_openrouter_key
+BASE_URL=https://openrouter.ai/api/v1
+CHAT_MODEL=nvidia/nemotron-3.5-lightning:free
+EMBEDDING_MODEL=nvidia/nemotron-3.5-embed-1b:free
 ```
 
-Ask from the terminal:
+Index the PDF once, and again whenever it changes:
 
 ```bash
-python -m ibo_rag.cli ask "What does the document say about ...?"
+cd src
+python -m rag.ingest --pdf ../data/muse.pdf
 ```
 
-Run the API:
+Other settings:
+
+- **Wake and grateful words:** `Audio.WAKE_WORDS` and `Audio.GRATEFUL_WORDS` in `control_config.py`.
+- **Servo pins and angles:** `Servo` class in `control_config.py`. Angles: 0° down, 90° centre, 180° up.
+- **Blink timing:** `Blink.INTERVAL_MS` in `expression_config.py`.
+- **Chat font (for Nepali/Hindi):** `Chat.FONT_PATH`, set to a Devanagari TTF.
+
+## Running
+
+Run everything from `src/`:
 
 ```bash
-uvicorn ibo_rag.api.app:app --reload
+cd src
+python -m rag.cli      # optional: test the RAG path alone
+python main.py         # full app
 ```
 
-Then query it:
+Press `Esc` in the face window, or close either window, to stop.
 
-```bash
-curl -N http://localhost:8000/query \
-  -H 'content-type: application/json' \
-  -d '{"question":"What does the document say about ...?"}'
-```
+## Usage
 
-Use the exact phrase `search online` to enable Tavily.
+1. Start the app. The face begins in random looking (1a).
+2. Say a wake word such as "hello collexa". The face switches to listening, and the eyes follow you.
+3. Ask a question. The answer streams into the chat window with page citations.
+4. Say "thank you" to see the grateful reaction.
+5. Stand in front of the camera for 15 s in 1a to start Active and tracking.
+6. With no speech for 2 minutes, the bot returns to random looking and the cycle repeats.
 
-## Testing
+## Troubleshooting
 
-```bash
-ruff check .
-ruff format --check .
-pytest tests/unit
-```
+| Problem | Fix |
+|---|---|
+| Wake word never fires | The placeholder model only detects its built-in phrase. Train and set `WAKE_MODEL_PATH`. |
+| `whisper-cli` not found | Set `WHISPER_CLI` to the full path. |
+| Camera fails to open | Another app holds device 0. Close it, or change `Camera.DEVICE_INDEX`. |
+| Nepali text shows as boxes | Set `Chat.FONT_PATH` to a Devanagari font. |
+| `ModuleNotFoundError: config` | Use `control.control_config` and `expression.expression_config` imports. |
+| Empty answers from RAG | Re-run `rag.ingest`, and check `.env`. |
 
-Tests do not call external model providers. Live ingestion and answering require configured credentials.
+## Roadmap
 
-## Security and privacy
+- Chatterbox text-to-speech for spoken answers (deferred, needs more compute than the Pi 3B+ provides)
+- Choosing the Active-state face (listening or horizontal tracking)
+- Startup idle face for the first two minutes
+- Custom wake-word model for "hello collexa" and the Nepali words
+- Whisper base or small for better Nepali accuracy, if the hardware allows
 
-Never commit `.env`, API keys, private PDFs, or generated Chroma data. Retrieved documents and web results are treated as untrusted evidence, not instructions.
-
-## Limitations
-
-This first version has no frontend, authentication, persistent chat history, file-upload endpoint, or deployment configuration.
