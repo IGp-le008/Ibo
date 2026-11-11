@@ -67,7 +67,7 @@ class Audio:
     WAKE_THRESHOLD = 0.5
     # Wake words for transcript matching and grateful trigger
     WAKE_WORDS = [
-        "hello collexa", "collexa", "hi", "hello", "excuse me", "wakeup",
+        "hello allexa", "allexa", "hi", "hello", "excuse me", "wakeup",
         "wake up", "k xa", "sunata", "oi", "oih",
     ]
     GRATEFUL_WORDS = [
