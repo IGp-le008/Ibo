@@ -80,6 +80,7 @@ class Audio:
     MAX_UTTERANCE_MS = 10000             # hard cap on one utterance
     WAKE_COOLDOWN_MS = 1500              # ignore wake detections right after one fires
     TMP_WAV_PATH = "/tmp/collexa_utt.wav"
+    INPUT_DEVICE = 2
 
 #Timing preset of dirrent states
 class Timing:

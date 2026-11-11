@@ -137,7 +137,7 @@ def run_voice_worker(out_queue, stop_event):
 
     last_wake_ms = -1e9
 
-    with sd.InputStream(samplerate=Audio.SAMPLE_RATE, channels=1,
+    with sd.InputStream(device=Audio.INPUT_DEVICE, samplerate=Audio.SAMPLE_RATE, channels=1,
                         dtype="int16", blocksize=chunk_len) as stream:
         while not stop_event.is_set():
             data, _ = stream.read(chunk_len)
